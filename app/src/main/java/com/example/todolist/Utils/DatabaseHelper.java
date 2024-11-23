@@ -1,4 +1,4 @@
-package com.example.todolist;
+package com.example.todolist.Utils;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -9,6 +9,8 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
+import com.example.todolist.Model.TaskModel;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +20,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private final static String TABLE = "task";
     private final static String ID = "id";
     private final static String TITLE = "title";
+    private final static String DUE_DATE = "dueDate";
     private final static String STATUS = "status";
 
     private SQLiteDatabase database;
@@ -25,10 +28,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private final static String TABLE_CREATE = String.format("CREATE TABLE %s (" +
                     "%s INTEGER PRIMARY KEY AUTOINCREMENT, " +
                     "%s TEXT, " +
+                    "%s INTEGER, " +
                     "%s TEXT)",
-            TABLE, ID, TITLE, STATUS);
+            TABLE, ID, TITLE, DUE_DATE, STATUS);
 
-    public DatabaseHelper(@Nullable Context context, @Nullable String name, @Nullable SQLiteDatabase.CursorFactory factory, int version) {
+    public DatabaseHelper(@Nullable Context context) {
         super(context, DATABASE, null, 1);
     }
 
@@ -54,6 +58,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void insertTask(TaskModel task){
         ContentValues cv = new ContentValues();
         cv.put(TITLE, task.getTitle());
+        cv.put(DUE_DATE, task.getDueDate());
         cv.put(STATUS, 0);
         database.insert(TABLE, null, cv);
     }
@@ -73,6 +78,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         TaskModel task = new TaskModel();
                         task.setId(cur.getInt(cur.getColumnIndexOrThrow(ID)));
                         task.setTitle(cur.getString(cur.getColumnIndexOrThrow(TITLE)));
+                        task.setDueDate(cur.getString(cur.getColumnIndexOrThrow(DUE_DATE)));
                         task.setStatus(cur.getInt(cur.getColumnIndexOrThrow(STATUS)));
                         taskList.add(task);
                     }
@@ -88,14 +94,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return taskList;
     }
 
-    public void updateStatus(int id, int status){
+    public void updateStatusById(int id, int status){
         ContentValues cv = new ContentValues();
         cv.put(STATUS, status);
+        database.update(TABLE, cv, ID + "= ?", new String[] {String.valueOf(id)});
+    }
+
+    public void updateTitle(int id, String title) {
+        ContentValues cv = new ContentValues();
+        cv.put(TITLE, title);
+        database.update(TABLE, cv, ID + "= ?", new String[] {String.valueOf(id)});
+    }
+
+    public void updateDueDate(int id, String dueDate){
+        ContentValues cv = new ContentValues();
+        cv.put(DUE_DATE, dueDate);
         database.update(TABLE, cv, ID + "= ?", new String[] {String.valueOf(id)});
     }
 
     public void deleteTask(int id){
         database.delete(TABLE, ID + "= ?", new String[] {String.valueOf(id)});
     }
-
 }

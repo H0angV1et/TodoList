@@ -1,7 +1,10 @@
 <resources>
     <string name="app_name">TodoList</string>
     <string name="add_task">Add</string>
-    <string name="input_new_task">Input new task here</string>
-    <string name="edit">Edit task</string>
-    <string name="delete">Delete task</string>
+    <string name="delete">Delete</string>
+    <string name="what_to_be_done">What is to be done ?</string>
+    <string name="due_date">Due date</string>
+    <string name="input_full_task">Enter Task Here</string>
+    <string name="date_not_set">Date not set</string>
+    <string name="input_date">Input date</string>
 </resources>
